@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121019">
+  <meta name="color-scheme" content="dark">
+  <title>TerraPrep | Terraform Associate practice</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <script defer src="question-bank.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#dashboard"><span class="brand-mark" aria-hidden="true">T<span>.</span></span><span>TerraPrep<small>BUILD YOUR KNOWLEDGE</small></span></a>
+    <div class="exam-label">YOUR LEARNING SPACE</div>
+    <nav aria-label="Main navigation">
+      <a href="#dashboard" data-nav="dashboard"><span aria-hidden="true">&#9638;</span> Overview</a>
+      <a href="#practice" data-nav="practice"><span aria-hidden="true">&#9655;</span> Practice questions</a>
+      <a href="#resources" data-nav="resources"><span aria-hidden="true">&#8801;</span> Study resources</a>
+    </nav>
+    <div class="sidebar-note"><span class="eyebrow">ONE STEP AT A TIME</span><h3>Understand it.<br>Don't just memorize it.</h3><p>Read the explanation, try the command, then practice again.</p></div>
+    <div class="sidebar-footer"><span class="status-dot"></span> Local-first. No account needed.</div>
+  </aside>
+  <main>
+    <header class="topbar"><span>HashiCorp Terraform <span class="badge">ASSOCIATE 004</span></span><span class="topbar-detail">Your next chapter in infrastructure</span></header>
+    <div id="notice" role="alert" hidden></div>
+    <div id="app"><p role="status">Loading practice questions...</p></div>
+    <footer>Independent study tool, not affiliated with HashiCorp. Original practice questions, not actual exam questions or exam dumps. Scores do not predict certification results.</footer>
+  </main>
+  <dialog id="finish-dialog" aria-labelledby="finish-title">
+    <h2 id="finish-title">Finish this session?</h2>
+    <p id="finish-message"></p>
+    <div class="actions"><button id="cancel-finish" class="button secondary">Keep practicing</button><button id="confirm-finish" class="button primary">Finish &amp; see results</button></div>
+  </dialog>
+  <dialog id="reset-dialog" aria-labelledby="reset-title">
+    <h2 id="reset-title">Reset your progress?</h2>
+    <p>This removes this app's answers, bookmarks, history, and active session from this browser. It cannot be undone.</p>
+    <div class="actions"><button id="cancel-reset" class="button secondary">Cancel</button><button id="confirm-reset" class="button danger">Reset progress</button></div>
+  </dialog>
+</body>
+</html>

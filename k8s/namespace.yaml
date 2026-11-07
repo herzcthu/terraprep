@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: terraform-learning
+  labels:
+    app.kubernetes.io/name: terraprep
+    pod-security.kubernetes.io/enforce: restricted

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: terraprep-temporary
+  namespace: terraform-learning
+  labels:
+    app.kubernetes.io/name: terraprep
+    app.kubernetes.io/component: temporary-access
+spec:
+  type: NodePort
+  selector:
+    app: terraprep
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30084

@@ -1,0 +1,2924 @@
+{
+  "version": 1,
+  "topics": [
+    {
+      "id": "iac",
+      "name": "Infrastructure as Code",
+      "objective": "1",
+      "description": "Declarative infrastructure, repeatability, and multi-cloud workflows.",
+      "source": "/terraform/intro"
+    },
+    {
+      "id": "fundamentals",
+      "name": "Terraform fundamentals",
+      "objective": "2",
+      "description": "Providers, version constraints, and the role of state.",
+      "source": "/terraform/language/providers"
+    },
+    {
+      "id": "workflow",
+      "name": "Core workflow",
+      "objective": "3",
+      "description": "Initialize, validate, plan, apply, and destroy.",
+      "source": "/terraform/intro/core-workflow"
+    },
+    {
+      "id": "configuration",
+      "name": "Configuration & secrets",
+      "objective": "4",
+      "description": "HCL, expressions, dependencies, conditions, and sensitive data.",
+      "source": "/terraform/language"
+    },
+    {
+      "id": "modules",
+      "name": "Terraform modules",
+      "objective": "5",
+      "description": "Reusable infrastructure, inputs, outputs, and module versions.",
+      "source": "/terraform/language/modules"
+    },
+    {
+      "id": "state",
+      "name": "State management",
+      "objective": "6",
+      "description": "Backends, locking, remote state, and secure collaboration.",
+      "source": "/terraform/language/state"
+    },
+    {
+      "id": "maintenance",
+      "name": "Maintain infrastructure",
+      "objective": "7",
+      "description": "Import resources, inspect state, and troubleshoot with logs.",
+      "source": "/terraform/cli"
+    },
+    {
+      "id": "hcp",
+      "name": "HCP Terraform",
+      "objective": "8",
+      "description": "Remote runs, projects, governance, and team workflows.",
+      "source": "/terraform/cloud-docs"
+    }
+  ],
+  "questions": [
+    {
+      "id": "iac-1",
+      "topic": "iac",
+      "objective": "1a",
+      "prompt": "A team describes its desired infrastructure in version-controlled files instead of clicking through a cloud console. Which practice is this?",
+      "options": [
+        "Infrastructure as Code",
+        "Manual change management",
+        "Application compilation",
+        "Packet inspection"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Infrastructure as Code represents infrastructure in machine-readable configuration. Terraform uses that configuration to plan and manage resources.",
+      "source": "/terraform/intro"
+    },
+    {
+      "id": "iac-2",
+      "topic": "iac",
+      "objective": "1b",
+      "prompt": "Which TWO benefits come from keeping infrastructure configuration in version control?",
+      "options": [
+        "Changes can be reviewed before deployment",
+        "All cloud resources become free",
+        "The history of configuration changes is available",
+        "Terraform no longer needs credentials"
+      ],
+      "answers": [
+        0,
+        2
+      ],
+      "explanation": "Version control enables review and an auditable change history. It does not remove provider authentication requirements or infrastructure costs.",
+      "source": "/terraform/intro"
+    },
+    {
+      "id": "iac-3",
+      "topic": "iac",
+      "objective": "1a",
+      "prompt": "Terraform's declarative approach means you primarily describe the desired end state, not every procedural API call.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Terraform compares configuration and current state, builds a dependency graph, and determines the operations needed to reach the desired state.",
+      "source": "/terraform/intro"
+    },
+    {
+      "id": "iac-4",
+      "topic": "iac",
+      "objective": "1c",
+      "prompt": "A configuration needs to manage AWS infrastructure and DNS records in another service. What enables this?",
+      "options": [
+        "Using only the AWS CLI",
+        "Using the relevant Terraform providers in one configuration",
+        "Converting all DNS records to AWS resources",
+        "Keeping every resource in a separate state file"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Providers implement APIs for many platforms. A Terraform configuration can use multiple providers and references between their resources.",
+      "source": "/terraform/intro/use-cases"
+    },
+    {
+      "id": "iac-5",
+      "topic": "iac",
+      "objective": "1b",
+      "prompt": "An engineer changes a managed resource directly in the cloud console. Will Terraform configuration automatically update to match that change?",
+      "options": [
+        "Yes, configuration is rewritten on every plan",
+        "No, Terraform can detect drift but does not automatically rewrite your configuration",
+        "Yes, if the configuration is in Git",
+        "No, Terraform never reads remote resources"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform normally refreshes resource information during planning and can detect drift. You must decide whether to reconcile infrastructure or intentionally update configuration.",
+      "source": "/terraform/cli/commands/plan"
+    },
+    {
+      "id": "iac-6",
+      "topic": "iac",
+      "objective": "1c",
+      "prompt": "Does using Terraform make an AWS-specific resource configuration directly portable to Azure without changes?",
+      "options": [
+        "Yes, providers translate every resource automatically",
+        "No, the workflow is consistent but resource types and arguments are provider-specific"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform offers a consistent workflow across platforms, not automatic translation of provider-specific infrastructure definitions.",
+      "source": "/terraform/intro/use-cases"
+    },
+    {
+      "id": "fundamentals-1",
+      "topic": "fundamentals",
+      "objective": "2b",
+      "prompt": "What is the primary role of a Terraform provider?",
+      "options": [
+        "Store the Git history of a configuration",
+        "Implement resource types and interact with a platform's API",
+        "Replace the Terraform CLI",
+        "Guarantee that a plan has no cost"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Providers are plugins that expose resources and data sources and communicate with remote services through their APIs.",
+      "source": "/terraform/language/providers"
+    },
+    {
+      "id": "fundamentals-2",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "Which command initializes a working directory and installs its required providers?",
+      "options": [
+        "terraform fmt",
+        "terraform output",
+        "terraform init",
+        "terraform destroy"
+      ],
+      "answers": [
+        2
+      ],
+      "explanation": "terraform init initializes the backend, installs provider plugins, and downloads referenced modules. It does not create infrastructure.",
+      "source": "/terraform/cli/commands/init"
+    },
+    {
+      "id": "fundamentals-3",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "What does .terraform.lock.hcl track?",
+      "options": [
+        "All input variable values",
+        "Selected provider versions and package checksums",
+        "Selected remote module versions and all state snapshots",
+        "Cloud account passwords"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "The dependency lock file records provider selections and checksums. It does not currently lock remote module versions. Commit it for reproducible provider installation.",
+      "source": "/terraform/language/files/dependency-lock"
+    },
+    {
+      "id": "fundamentals-4",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "Which versions satisfy the provider constraint ~> 5.2.0?",
+      "options": [
+        "5.2.0 and later 5.2 patch releases, but not 5.3.0",
+        "Any version greater than 5.0.0",
+        "Only 5.2.0",
+        "Any 5.x version including 5.9.0"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "The pessimistic constraint ~> 5.2.0 permits >= 5.2.0 and < 5.3.0. In contrast, ~> 5.2 permits >= 5.2 and < 6.0.",
+      "source": "/terraform/language/expressions/version-constraints"
+    },
+    {
+      "id": "fundamentals-5",
+      "topic": "fundamentals",
+      "objective": "2c",
+      "prompt": "You need two configurations of the same provider for two AWS regions. What should you use?",
+      "options": [
+        "Provider aliases and the resource provider argument",
+        "Two required_version arguments",
+        "A separate Terraform installation per region",
+        "terraform fmt -recursive"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "An aliased provider configuration supplies alternate settings. Resources can select it with a reference such as provider = aws.secondary.",
+      "source": "/terraform/language/providers/configuration"
+    },
+    {
+      "id": "fundamentals-6",
+      "topic": "fundamentals",
+      "objective": "2d",
+      "prompt": "Why does Terraform maintain state?",
+      "options": [
+        "To replace all configuration files",
+        "To map resource addresses to real objects and track metadata",
+        "To store the source code of every provider",
+        "To prevent any change outside Terraform"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "State binds configured resource instances to remote objects and records metadata Terraform needs to manage them. It does not prevent out-of-band changes.",
+      "source": "/terraform/language/state/purpose"
+    },
+    {
+      "id": "workflow-1",
+      "topic": "workflow",
+      "objective": "3a",
+      "prompt": "After writing a new configuration, which command sequence follows the usual initial workflow?",
+      "options": [
+        "apply, init, plan",
+        "init, plan, apply",
+        "destroy, plan, init",
+        "output, destroy, fmt"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Initialize the directory, preview proposed changes with plan, then apply the changes. Formatting and validation can be performed before planning.",
+      "source": "/terraform/intro/core-workflow"
+    },
+    {
+      "id": "workflow-2",
+      "topic": "workflow",
+      "objective": "3c",
+      "prompt": "What does terraform validate check?",
+      "options": [
+        "Whether the cloud account has enough quota",
+        "Configuration syntax and internal consistency",
+        "Whether every remote API call will succeed",
+        "Whether a plan meets an organization's cost budget"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "validate checks syntax and consistency, such as argument names and value types. It does not validate remote service availability or credentials. Initialize dependencies first.",
+      "source": "/terraform/cli/commands/validate"
+    },
+    {
+      "id": "workflow-3",
+      "topic": "workflow",
+      "objective": "3d",
+      "prompt": "Running terraform plan without applying it creates the proposed infrastructure.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "plan previews changes; apply performs them. Planning may read remote data and refresh information, but does not execute the proposed managed-resource changes.",
+      "source": "/terraform/cli/commands/plan"
+    },
+    {
+      "id": "workflow-4",
+      "topic": "workflow",
+      "objective": "3e",
+      "prompt": "You save a reviewed plan with terraform plan -out=reviewed.tfplan. How do you apply that saved plan?",
+      "options": [
+        "terraform apply reviewed.tfplan",
+        "terraform init reviewed.tfplan",
+        "terraform plan -apply reviewed.tfplan",
+        "terraform validate -out=reviewed.tfplan"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Passing the saved plan file to apply executes that plan without generating a new plan or prompting for approval. Protect the file because it may contain secrets.",
+      "source": "/terraform/cli/commands/apply"
+    },
+    {
+      "id": "workflow-5",
+      "topic": "workflow",
+      "objective": "3f",
+      "prompt": "What does terraform destroy normally target?",
+      "options": [
+        "Every resource in the cloud account",
+        "Resources managed by the current Terraform configuration and state",
+        "Only local .tf files",
+        "Only unused provider plugins"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "destroy proposes deleting resources managed in the current workspace. It does not delete every resource in an account or delete your configuration files.",
+      "source": "/terraform/cli/commands/destroy"
+    },
+    {
+      "id": "workflow-6",
+      "topic": "workflow",
+      "objective": "3g",
+      "prompt": "Which command checks formatting recursively without rewriting files, useful in CI?",
+      "options": [
+        "terraform validate -recursive",
+        "terraform fmt -check -recursive",
+        "terraform init -check",
+        "terraform plan -format"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "fmt -check reports whether files are formatted and returns a nonzero status for formatting differences. -recursive includes subdirectories.",
+      "source": "/terraform/cli/commands/fmt"
+    },
+    {
+      "id": "configuration-1",
+      "topic": "configuration",
+      "objective": "4a",
+      "prompt": "Which TWO statements correctly distinguish managed resources and data sources?",
+      "options": [
+        "A resource block describes an object Terraform manages",
+        "A data block always creates a new remote object",
+        "A data block reads information made available by a provider",
+        "Resources never appear in state"
+      ],
+      "answers": [
+        0,
+        2
+      ],
+      "explanation": "Managed resources have a lifecycle controlled by Terraform. Data sources retrieve information, such as an existing image or network, for use in configuration.",
+      "source": "/terraform/language/data-sources"
+    },
+    {
+      "id": "configuration-2",
+      "topic": "configuration",
+      "objective": "4b",
+      "prompt": "Which reference uses the id attribute of a managed resource declared as resource \"aws_vpc\" \"main\"?",
+      "options": [
+        "var.aws_vpc.main.id",
+        "aws_vpc.main.id",
+        "data.aws_vpc.main.id",
+        "module.aws_vpc.id"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "A managed resource reference starts with its type and local name. data prefixes data source references; var prefixes input variable references.",
+      "source": "/terraform/language/expressions/references"
+    },
+    {
+      "id": "configuration-3",
+      "topic": "configuration",
+      "objective": "4c",
+      "prompt": "Given the following input, which expression returns the production region?",
+      "code": "variable \"regions\" {\n  type = map(string)\n  default = {\n    dev  = \"us-west-2\"\n    prod = \"eu-west-1\"\n  }\n}",
+      "options": [
+        "var.regions[\"prod\"]",
+        "regions.prod.value",
+        "var.regions[1]",
+        "local.regions[\"prod\"]"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Input variables are referenced using var.<name>. Map entries are selected by their key, not a positional numeric index.",
+      "source": "/terraform/language/expressions/references"
+    },
+    {
+      "id": "configuration-4",
+      "topic": "configuration",
+      "objective": "4d",
+      "prompt": "Which type constraint describes a value with a name string and an enabled boolean?",
+      "options": [
+        "list(string)",
+        "map(number)",
+        "object({ name = string, enabled = bool })",
+        "set(bool)"
+      ],
+      "answers": [
+        2
+      ],
+      "explanation": "An object type defines named attributes with their own types. Maps require values of a common element type, and lists and sets are collections.",
+      "source": "/terraform/language/expressions/type-constraints"
+    },
+    {
+      "id": "configuration-5",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "What value does this expression produce when var.production is false?",
+      "code": "var.production ? \"large\" : \"small\"",
+      "options": [
+        "\"large\"",
+        "\"small\"",
+        "null",
+        "A syntax error"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "A conditional expression has the form condition ? true_value : false_value. Terraform selects the false branch here.",
+      "source": "/terraform/language/expressions/conditionals"
+    },
+    {
+      "id": "configuration-6",
+      "topic": "configuration",
+      "objective": "4f",
+      "prompt": "A resource uses another resource's attribute in an argument. Must you also add depends_on for that same dependency?",
+      "options": [
+        "Always",
+        "No, the reference establishes an implicit dependency"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform infers dependencies from expression references. Use depends_on for dependencies that Terraform cannot infer, such as reliance on another resource's behavior without reading its attributes.",
+      "source": "/terraform/language/meta-arguments/depends_on"
+    },
+    {
+      "id": "configuration-7",
+      "topic": "configuration",
+      "objective": "4g",
+      "prompt": "You want to reject an invalid environment input before provisioning. Which construct is designed for this?",
+      "options": [
+        "A validation block inside the variable block",
+        "A provisioner that prints a warning after creation",
+        "terraform fmt",
+        "A provider alias"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Input variable validation defines a condition and error_message. Failed validation blocks the operation. Failed check block assertions, by contrast, report warnings and do not block operations.",
+      "source": "/terraform/language/validate"
+    },
+    {
+      "id": "configuration-8",
+      "topic": "configuration",
+      "objective": "4h",
+      "prompt": "Which TWO statements about sensitive and ephemeral values are correct for Terraform 1.12?",
+      "options": [
+        "sensitive = true encrypts values inside local state",
+        "Sensitive values can still be stored in state and plan files",
+        "Ephemeral values are omitted from state and plan files and have usage restrictions",
+        "Every ordinary resource argument accepts an ephemeral value"
+      ],
+      "answers": [
+        1,
+        2
+      ],
+      "explanation": "sensitive redacts normal displays, not storage. ephemeral prevents persistence but is restricted to supported contexts. Write-only resource arguments require provider support. Vault alone does not guarantee that retrieved secrets stay out of state.",
+      "source": "/terraform/language/manage-sensitive-data"
+    },
+    {
+      "id": "modules-1",
+      "topic": "modules",
+      "objective": "5a",
+      "prompt": "What is the root module?",
+      "options": [
+        "Only the first .tf file alphabetically",
+        "The Terraform configuration in the working directory",
+        "Every module in the public registry",
+        "The installed provider binary"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "The root module is the collection of Terraform configuration files in the working directory. Modules called from it are child modules.",
+      "source": "/terraform/language/modules"
+    },
+    {
+      "id": "modules-2",
+      "topic": "modules",
+      "objective": "5a",
+      "prompt": "Which TWO are valid module source types?",
+      "options": [
+        "A local directory such as ./modules/network",
+        "A registry address such as hashicorp/consul/aws",
+        "The current state lock identifier",
+        "The name of an input variable without a source address"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "Terraform supports local directories, registry modules, version control repositories, and other documented source types.",
+      "source": "/terraform/language/modules/sources"
+    },
+    {
+      "id": "modules-3",
+      "topic": "modules",
+      "objective": "5b",
+      "prompt": "A root module defines var.region. Does a child module automatically inherit that input variable's value?",
+      "options": [
+        "Yes, all input variables are global",
+        "No, pass the value through the child module's input argument"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Variables are scoped to a module. A child module declares its own inputs and the caller passes values, for example region = var.region.",
+      "source": "/terraform/language/modules/develop/composition"
+    },
+    {
+      "id": "modules-4",
+      "topic": "modules",
+      "objective": "5c",
+      "prompt": "A child module named network exports an output named subnet_id. How does its parent read the output?",
+      "options": [
+        "var.network.subnet_id",
+        "module.network.subnet_id",
+        "output.network.subnet_id",
+        "network.outputs[0]"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Child module outputs are exposed through module.<call_name>.<output_name>. The output provides a public interface rather than accessing child resources directly.",
+      "source": "/terraform/language/values/outputs"
+    },
+    {
+      "id": "modules-5",
+      "topic": "modules",
+      "objective": "5d",
+      "prompt": "Where is the version argument supported in a module block?",
+      "options": [
+        "For registry modules",
+        "For every local directory source",
+        "Only for modules with no variables",
+        "Only in the root terraform block"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "The module version argument applies to registry sources. Git sources can select a revision through a ref query parameter; local sources do not use registry version constraints.",
+      "source": "/terraform/language/modules/syntax"
+    },
+    {
+      "id": "modules-6",
+      "topic": "modules",
+      "objective": "5c",
+      "prompt": "You add a module block to an initialized configuration. What should you do before planning?",
+      "options": [
+        "Run terraform init to install the module",
+        "Delete the state file",
+        "Run terraform destroy",
+        "Rename every output"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Run init after adding or changing module sources so Terraform can download and install modules. You do not need to destroy existing resources.",
+      "source": "/terraform/cli/commands/init"
+    },
+    {
+      "id": "state-1",
+      "topic": "state",
+      "objective": "6a",
+      "prompt": "Without a different backend configured, where is Terraform state normally stored?",
+      "options": [
+        "In the Terraform Registry",
+        "In a local terraform.tfstate file",
+        "Only in RAM between CLI commands",
+        "Inside .terraform.lock.hcl"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform's default local backend stores state locally. Treat state as sensitive; do not commit it to source control.",
+      "source": "/terraform/language/backend/local"
+    },
+    {
+      "id": "state-2",
+      "topic": "state",
+      "objective": "6b",
+      "prompt": "What is the purpose of state locking on a supported backend?",
+      "options": [
+        "Prevent concurrent operations from writing the same state",
+        "Prevent anyone from viewing configuration",
+        "Encrypt every variable",
+        "Prevent any provider upgrades"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "State locking prevents simultaneous writers from corrupting state. Backend support varies; do not assume every backend provides locking.",
+      "source": "/terraform/language/state/locking"
+    },
+    {
+      "id": "state-3",
+      "topic": "state",
+      "objective": "6b",
+      "prompt": "Another engineer has an active apply holding the state lock. What is the safest response?",
+      "options": [
+        "Immediately force-unlock and start your apply",
+        "Coordinate with the engineer and wait for the operation to finish",
+        "Delete the state file",
+        "Always apply with -lock=false"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "An active lock protects state. force-unlock is for recovering your own stale lock after confirming no operation is using it, not for overriding another active writer.",
+      "source": "/terraform/cli/commands/force-unlock"
+    },
+    {
+      "id": "state-4",
+      "topic": "state",
+      "objective": "6c",
+      "prompt": "Which TWO are good practices for team state storage?",
+      "options": [
+        "Use a suitable remote backend with access controls",
+        "Commit state containing secrets to a public repository",
+        "Use supported locking to coordinate writers",
+        "Give every teammate a separate unmanaged copy of the same state"
+      ],
+      "answers": [
+        0,
+        2
+      ],
+      "explanation": "Remote state enables shared access under controls, and locking coordinates writes. Use encryption and least-privilege access; avoid divergent copies and committing secrets.",
+      "source": "/terraform/language/state/remote"
+    },
+    {
+      "id": "state-5",
+      "topic": "state",
+      "objective": "6c",
+      "prompt": "After configuring a new backend, which command can migrate existing state into it?",
+      "options": [
+        "terraform init -migrate-state",
+        "terraform fmt -migrate",
+        "terraform validate -backend",
+        "terraform output -move"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "init -migrate-state attempts to copy existing state to the configured backend and may prompt for confirmation. Back up state before migration.",
+      "source": "/terraform/cli/commands/init"
+    },
+    {
+      "id": "state-6",
+      "topic": "state",
+      "objective": "6c",
+      "prompt": "Using a remote backend always means Terraform executes plans and applies remotely.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Remote state storage and remote execution are distinct. Many backends only store state while the CLI executes locally. HCP Terraform can also provide remote execution.",
+      "source": "/terraform/language/state/remote"
+    },
+    {
+      "id": "state-7",
+      "topic": "state",
+      "objective": "6d",
+      "prompt": "You rename aws_vpc.old to aws_vpc.main in configuration without changing the remote network. Which block records the address change so Terraform can preserve the object?",
+      "options": [
+        "A moved block with from and to addresses",
+        "A data block with the new resource name",
+        "A validation block",
+        "An output block named old"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "A moved block tells Terraform that an existing object now has a new resource address. This lets you review a refactor in the plan without unnecessarily destroying and recreating the object.",
+      "source": "/terraform/language/modules/develop/refactoring"
+    },
+    {
+      "id": "state-8",
+      "topic": "state",
+      "objective": "6d",
+      "prompt": "What does terraform apply -refresh-only do?",
+      "options": [
+        "Change remote resources to match the configuration",
+        "Update state and root outputs to reflect changes made outside Terraform",
+        "Delete resources missing from configuration",
+        "Download the latest provider versions"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Refresh-only mode reconciles Terraform's records with remote objects, without modifying those objects. It does not rewrite configuration; a later normal plan may still propose changes to match configuration.",
+      "source": "/terraform/cli/commands/plan"
+    },
+    {
+      "id": "state-9",
+      "topic": "state",
+      "objective": "6d",
+      "prompt": "You want Terraform to stop managing an object but leave it running. Which configuration-driven approach expresses this intent?",
+      "options": [
+        "Remove its resource block and add a removed block with lifecycle { destroy = false }",
+        "Run terraform destroy on the object",
+        "Set sensitive = true on every attribute",
+        "Rename the resource without a moved block"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "A removed block with destroy = false removes an object's binding from state without destroying it. Replace the corresponding resource configuration and review the plan before applying.",
+      "source": "/terraform/language/block/removed"
+    },
+    {
+      "id": "state-10",
+      "topic": "state",
+      "objective": "6d",
+      "prompt": "A normal plan detects that a server's size was changed manually. Configuration still declares the old size. What should you expect?",
+      "options": [
+        "Terraform will always preserve the manual change without a plan",
+        "Terraform can propose changing the server to match configuration; review whether to accept the drift or reconcile it",
+        "Terraform automatically commits an updated .tf file",
+        "Terraform ignores all remote attributes during planning"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform normally refreshes managed resources during planning, compares them with configuration, and proposes reconciliation. If the manual change is intentional, update configuration; refresh-only updates state rather than the desired configuration.",
+      "source": "/terraform/tutorials/state/resource-drift"
+    },
+    {
+      "id": "maintenance-1",
+      "topic": "maintenance",
+      "objective": "7a",
+      "prompt": "What does the classic terraform import ADDRESS ID command do?",
+      "options": [
+        "Associate an existing remote object with a resource address in state",
+        "Automatically create all .tf configuration for your cloud account",
+        "Copy a module from the registry",
+        "Destroy the imported object"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "CLI import records an existing object's association in state. You must supply matching resource configuration; it does not generate configuration.",
+      "source": "/terraform/cli/commands/import"
+    },
+    {
+      "id": "maintenance-2",
+      "topic": "maintenance",
+      "objective": "7a",
+      "prompt": "Which feature lets you declare imports in configuration and review them in a plan?",
+      "options": [
+        "An import block",
+        "A locals block alone",
+        "A provider alias",
+        "terraform fmt -import"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "An import block specifies an existing object id and a target resource address. Configuration-driven import supports the plan/apply workflow; supported imports can also generate configuration with plan -generate-config-out.",
+      "source": "/terraform/language/import"
+    },
+    {
+      "id": "maintenance-3",
+      "topic": "maintenance",
+      "objective": "7b",
+      "prompt": "Which command lists the resource addresses tracked in the current state?",
+      "options": [
+        "terraform state list",
+        "terraform providers lock",
+        "terraform fmt",
+        "terraform login"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "state list enumerates tracked addresses. Use state show <address> to inspect the attributes of an individual resource.",
+      "source": "/terraform/cli/commands/state/list"
+    },
+    {
+      "id": "maintenance-4",
+      "topic": "maintenance",
+      "objective": "7b",
+      "prompt": "What happens when terraform state rm removes an object's binding?",
+      "options": [
+        "The remote object is immediately destroyed",
+        "Terraform forgets the binding, but the remote object remains",
+        "The object's provider is uninstalled",
+        "All other state entries are removed"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "state rm removes the association, not the object. If its resource block remains, a later plan may propose a new object, so review configuration carefully.",
+      "source": "/terraform/cli/commands/state/rm"
+    },
+    {
+      "id": "maintenance-5",
+      "topic": "maintenance",
+      "objective": "7c",
+      "prompt": "Which environment variable enables detailed Terraform logs at the TRACE level?",
+      "options": [
+        "TF_LOG=TRACE",
+        "TF_VAR_log=TRACE",
+        "TF_DEBUG=false",
+        "TERRAFORM_FMT=TRACE"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "TF_LOG controls logging verbosity. TF_LOG_PATH can write logs to a file. Debug logs may contain sensitive information and should be handled securely.",
+      "source": "/terraform/internals/debugging"
+    },
+    {
+      "id": "maintenance-6",
+      "topic": "maintenance",
+      "objective": "7b",
+      "prompt": "You need to inspect the attributes of aws_vpc.main in state. Which command is appropriate?",
+      "options": [
+        "terraform state show aws_vpc.main",
+        "terraform init aws_vpc.main",
+        "terraform validate -show aws_vpc.main",
+        "terraform login aws_vpc.main"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "state show displays attributes for a single resource address. It reads the stored state rather than generating or applying a new plan.",
+      "source": "/terraform/cli/commands/state/show"
+    },
+    {
+      "id": "hcp-1",
+      "topic": "hcp",
+      "objective": "8a",
+      "prompt": "What does an HCP Terraform workspace typically organize?",
+      "options": [
+        "A configuration's state, variables, settings, and run history",
+        "Only a named local CLI state file",
+        "Every cloud account worldwide",
+        "Only provider source code"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "An HCP workspace represents a managed infrastructure collection with configuration, state, variables, and runs. It is more than a CLI workspace's separate state.",
+      "source": "/terraform/cloud-docs/workspaces"
+    },
+    {
+      "id": "hcp-2",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "Which TWO capabilities support governance and reuse in HCP Terraform?",
+      "options": [
+        "Policy enforcement using Sentinel or OPA",
+        "A private registry for sharing modules",
+        "Automatically removing all cloud provider charges",
+        "Bypassing all approval and access controls"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "Policy enforcement provides guardrails for infrastructure changes. A private registry lets organizations publish reusable modules and providers for internal use. Availability depends on the HCP edition.",
+      "source": "/terraform/cloud-docs/policy-enforcement"
+    },
+    {
+      "id": "hcp-3",
+      "topic": "hcp",
+      "objective": "8c",
+      "prompt": "Several workspaces need a shared set of configuration variables. Which feature is designed for this?",
+      "options": [
+        "Variable sets",
+        "A local .terraform.lock.hcl file",
+        "terraform fmt",
+        "A state lock ID"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "HCP Terraform variable sets can share Terraform or environment variables across workspaces. Scope and precedence determine which values apply.",
+      "source": "/terraform/cloud-docs/workspaces/variables/managing-variables"
+    },
+    {
+      "id": "hcp-4",
+      "topic": "hcp",
+      "objective": "8c",
+      "prompt": "What are HCP Terraform projects used for?",
+      "options": [
+        "Grouping workspaces and managing access at a project level",
+        "Replacing all provider plugins",
+        "Compiling HCL into a container image",
+        "Disabling state storage"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Projects organize related workspaces and provide a way to manage access to groups of workspaces.",
+      "source": "/terraform/cloud-docs/projects"
+    },
+    {
+      "id": "hcp-5",
+      "topic": "hcp",
+      "objective": "8d",
+      "prompt": "Which TWO steps belong to a typical CLI-driven HCP Terraform integration?",
+      "options": [
+        "Authenticate using terraform login or a supported token setup",
+        "Configure a cloud block to select the organization and workspace",
+        "Commit the API token directly in a public .tf file",
+        "Delete all resource blocks"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "The cloud block connects configuration to HCP Terraform. The CLI needs appropriate authentication. Keep tokens out of version-controlled configuration.",
+      "source": "/terraform/cli/cloud"
+    },
+    {
+      "id": "hcp-6",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "Why use dynamic provider credentials in HCP Terraform when supported?",
+      "options": [
+        "They provide short-lived credentials for runs instead of relying on long-lived static secrets",
+        "They allow access without any configured cloud trust",
+        "They remove the need for providers",
+        "They ensure all infrastructure is free"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Dynamic credentials use configured trust relationships to authenticate runs with short-lived credentials, reducing the need to store long-lived cloud credentials.",
+      "source": "/terraform/cloud-docs/workspaces/dynamic-provider-credentials"
+    },
+    {
+      "id": "iac-7",
+      "topic": "iac",
+      "objective": "1a",
+      "prompt": "After a successful apply, configuration and remote objects remain unchanged. What should a subsequent normal plan ideally report?",
+      "options": [
+        "Recreate every resource",
+        "No changes",
+        "Delete state automatically",
+        "Install a different cloud platform"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform plans the difference between desired configuration and current objects. When they agree, there should be no infrastructure changes; external changes or provider behavior can affect later plans.",
+      "source": "/terraform/cli/v1.12.x/commands/plan"
+    },
+    {
+      "id": "iac-8",
+      "topic": "iac",
+      "objective": "1b",
+      "prompt": "A team wants reproducible development environments. Which TWO choices support that goal?",
+      "options": [
+        "Keep configuration only in an engineer's memory",
+        "Reuse version-controlled configuration with environment inputs",
+        "Pin dependencies using supported version controls",
+        "Make every change directly in the console"
+      ],
+      "answers": [
+        1,
+        2
+      ],
+      "explanation": "Reusable configuration and controlled dependencies reduce accidental variation. Inputs let environments differ intentionally. Repeatability still depends on credentials, available services, and the configuration's design.",
+      "source": "/terraform/intro/v1.12.x"
+    },
+    {
+      "id": "iac-9",
+      "topic": "iac",
+      "objective": "1a",
+      "prompt": "A declarative configuration references a subnet's ID in a server argument. How does Terraform decide which object to create first?",
+      "options": [
+        "Alphabetical order of filenames",
+        "Resource block order in the file",
+        "A dependency graph derived from the references",
+        "The newest resource name always runs first"
+      ],
+      "answers": [
+        2
+      ],
+      "explanation": "Terraform builds a graph from dependencies. A reference to the subnet establishes that its required value must be available before the dependent operation; textual ordering is not the execution model.",
+      "source": "/terraform/internals/v1.12.x/graph"
+    },
+    {
+      "id": "iac-10",
+      "topic": "iac",
+      "objective": "1c",
+      "prompt": "A company manages a private virtualization platform and a public cloud. Which requirement must be met to manage both with Terraform?",
+      "options": [
+        "Both must be owned by the same cloud vendor",
+        "Suitable providers and authorized access must exist for the platforms",
+        "The private platform must be migrated first",
+        "Terraform state must be published publicly"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform can coordinate supported private and public platforms through their providers. API access and authentication are still required; Terraform does not create universal platform support by itself.",
+      "source": "/terraform/intro/v1.12.x/use-cases"
+    },
+    {
+      "id": "iac-11",
+      "topic": "iac",
+      "objective": "1b",
+      "prompt": "Version-controlling Terraform configuration guarantees that a previous commit can always restore deleted data.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Configuration history helps reproduce desired infrastructure, but it is not a backup of database contents or other runtime data. Resource recreation and data restoration are separate concerns.",
+      "source": "/terraform/intro/v1.12.x"
+    },
+    {
+      "id": "iac-12",
+      "topic": "iac",
+      "objective": "1b",
+      "prompt": "What is the strongest reason to review a Terraform plan during an infrastructure pull request?",
+      "options": [
+        "It guarantees that apply cannot fail",
+        "It previews proposed actions such as replacement or deletion before they are executed",
+        "It encrypts all secrets in the repository",
+        "It makes cloud quotas irrelevant"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "A plan makes proposed infrastructure changes reviewable. It is not a guarantee of successful execution, and infrastructure or credentials can change between planning and applying.",
+      "source": "/terraform/cli/v1.12.x/commands/plan"
+    },
+    {
+      "id": "fundamentals-7",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "Which block declares a provider's source address and version constraint for a module?",
+      "options": [
+        "required_providers inside terraform",
+        "A backend block inside a resource",
+        "A locals block named providers",
+        "The output block"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "required_providers maps local provider names to source addresses and allowed versions. Provider configuration blocks separately specify settings such as region and authentication.",
+      "source": "/terraform/language/v1.12.x/providers/requirements"
+    },
+    {
+      "id": "fundamentals-8",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "A provider version is locked, but a newer allowed version is available. Which command explicitly asks initialization to consider upgrades?",
+      "options": [
+        "terraform state pull",
+        "terraform init -upgrade",
+        "terraform output -upgrade",
+        "terraform fmt -upgrade"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "init -upgrade disregards existing dependency selections when choosing versions within the configuration's constraints. Review and commit the resulting provider lock-file changes.",
+      "source": "/terraform/cli/v1.12.x/commands/init"
+    },
+    {
+      "id": "fundamentals-9",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "What does required_version constrain in a terraform block?",
+      "options": [
+        "Only the AWS provider version",
+        "The Terraform CLI version",
+        "The cloud API version for every provider",
+        "The Git version used to clone modules"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "required_version specifies acceptable Terraform CLI versions. Provider versions are constrained separately through required_providers.",
+      "source": "/terraform/language/v1.12.x/terraform"
+    },
+    {
+      "id": "fundamentals-10",
+      "topic": "fundamentals",
+      "objective": "2b",
+      "prompt": "Which TWO responsibilities are normally divided between Terraform Core and a provider?",
+      "options": [
+        "Core evaluates configuration and coordinates the dependency graph",
+        "The provider implements platform-specific resource operations",
+        "Core supplies unrestricted cloud credentials automatically",
+        "Every provider controls the entire configuration's Git history"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "Terraform Core coordinates configuration, state, and graph operations, while plugins implement platform-specific behavior and API interaction.",
+      "source": "/terraform/plugin/how-terraform-works"
+    },
+    {
+      "id": "fundamentals-11",
+      "topic": "fundamentals",
+      "objective": "2c",
+      "prompt": "No resource explicitly selects a provider configuration, and every provider block of that type has an alias. What default configuration does Terraform use?",
+      "options": [
+        "The first alias alphabetically",
+        "An implied empty default configuration, which may fail if required settings are missing",
+        "All aliases simultaneously",
+        "No provider is required"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "When all provider blocks have aliases, Terraform creates an implied empty default configuration. Resources using the default can fail if the provider cannot obtain its required settings from defaults or other supported sources.",
+      "source": "/terraform/language/v1.12.x/providers/configuration"
+    },
+    {
+      "id": "fundamentals-12",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "Two modules require compatible versions of the same provider source. How many versions of that provider does Terraform normally select for the configuration?",
+      "options": [
+        "A different version for each resource",
+        "One version satisfying all applicable constraints",
+        "Only the oldest module's version, ignoring other constraints",
+        "No version until after apply"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform selects one version per provider source that satisfies all module constraints. If the constraints have no overlap, initialization reports an error.",
+      "source": "/terraform/language/v1.12.x/providers/requirements"
+    },
+    {
+      "id": "fundamentals-13",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "Which version is allowed by the constraint >= 1.12.0, < 1.13.0?",
+      "options": [
+        "1.11.9",
+        "1.13.0",
+        "1.12.3",
+        "2.0.0"
+      ],
+      "answers": [
+        2
+      ],
+      "explanation": "Comma-separated constraints must all hold. Version 1.12.3 is at least 1.12.0 and below 1.13.0; the other options violate a bound.",
+      "source": "/terraform/language/v1.12.x/expressions/version-constraints"
+    },
+    {
+      "id": "fundamentals-14",
+      "topic": "fundamentals",
+      "objective": "2d",
+      "prompt": "Why should two separate resource addresses not manage the same remote object?",
+      "options": [
+        "Remote objects cannot have IDs",
+        "Conflicting ownership can produce unexpected management behavior",
+        "It automatically doubles the object's memory",
+        "Terraform requires every resource address to be a cloud account number"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform expects each remote object to be bound to only one resource address. Duplicate bindings can produce conflicting operations; import into one appropriate address.",
+      "source": "/terraform/cli/v1.12.x/commands/import"
+    },
+    {
+      "id": "fundamentals-15",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "Which TWO files or directories should normally be treated differently in version control?",
+      "options": [
+        "Commit .terraform.lock.hcl to record provider selections",
+        "Ignore the generated .terraform directory",
+        "Commit every local state file containing secrets",
+        "Ignore every .tf configuration file"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "The lock file is intended for version control. The .terraform directory contains generated working-directory data and installed dependencies; state and secrets should not be committed.",
+      "source": "/terraform/language/v1.12.x/files/dependency-lock"
+    },
+    {
+      "id": "workflow-7",
+      "topic": "workflow",
+      "objective": "3b",
+      "prompt": "You want to initialize providers and modules for validation without configuring a backend. Which command supports this?",
+      "options": [
+        "terraform init -backend=false",
+        "terraform validate -install",
+        "terraform plan -no-providers",
+        "terraform output -backend=false"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "init -backend=false skips backend initialization while still initializing other working-directory dependencies. This is useful for validation-only workflows.",
+      "source": "/terraform/cli/v1.12.x/commands/init"
+    },
+    {
+      "id": "workflow-8",
+      "topic": "workflow",
+      "objective": "3d",
+      "prompt": "With terraform plan -detailed-exitcode, what does exit code 2 mean?",
+      "options": [
+        "An initialization error",
+        "A successful plan containing changes",
+        "A successful plan with no changes",
+        "Two resources were destroyed"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "With -detailed-exitcode, 0 means success with no changes, 1 means an error, and 2 means success with changes. CI must not treat every nonzero value as a failed plan.",
+      "source": "/terraform/cli/v1.12.x/commands/plan"
+    },
+    {
+      "id": "workflow-9",
+      "topic": "workflow",
+      "objective": "3d",
+      "prompt": "In a plan, a resource argument is shown as (known after apply). What does that indicate?",
+      "options": [
+        "The configuration is necessarily invalid",
+        "The value depends on information not yet available during planning",
+        "The value will never appear in state",
+        "Terraform has already applied the resource"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Some attributes, such as an API-assigned ID, cannot be determined until the resource is created. Terraform represents them as unknown during planning.",
+      "source": "/terraform/language/v1.12.x/expressions/references"
+    },
+    {
+      "id": "workflow-10",
+      "topic": "workflow",
+      "objective": "3e",
+      "prompt": "An apply creates one resource but fails while creating another. What should you do next?",
+      "options": [
+        "Assume every successful action was automatically rolled back",
+        "Inspect the error and resulting state, fix the cause, then review a new plan",
+        "Delete state and apply blindly",
+        "Run fmt to reverse the successful creation"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Terraform does not provide a general transaction rollback for a failed apply. Successful changes may remain and be recorded in state; resolve the cause and plan the remaining work.",
+      "source": "/terraform/cli/v1.12.x/commands/apply"
+    },
+    {
+      "id": "workflow-11",
+      "topic": "workflow",
+      "objective": "3e",
+      "prompt": "What does terraform apply -auto-approve change when Terraform generates a new plan?",
+      "options": [
+        "It skips the interactive approval prompt",
+        "It skips provider authentication",
+        "It guarantees all proposed changes are safe",
+        "It avoids creating a plan"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "-auto-approve bypasses confirmation of the generated plan, not planning, access checks, or errors. Use it only with appropriate automation controls.",
+      "source": "/terraform/cli/v1.12.x/commands/apply"
+    },
+    {
+      "id": "workflow-12",
+      "topic": "workflow",
+      "objective": "3d",
+      "prompt": "A managed object is damaged even though its configured arguments are unchanged. Which plan option requests its replacement?",
+      "options": [
+        "-replace=aws_instance.web",
+        "-format=aws_instance.web",
+        "-import-all",
+        "-lock=false"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "The -replace option requests replacement of the named resource instance and lets you review that action in a plan. It is the preferred workflow over the deprecated taint command.",
+      "source": "/terraform/cli/v1.12.x/commands/plan"
+    },
+    {
+      "id": "workflow-13",
+      "topic": "workflow",
+      "objective": "3d",
+      "prompt": "Why is routine use of -target discouraged for normal Terraform plans?",
+      "options": [
+        "It always destroys every resource",
+        "It can leave changes outside the targeted subset unapplied",
+        "It disables all configuration parsing",
+        "It is required for every dependency"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Resource targeting is for exceptional situations, such as recovery. A targeted plan may not represent all changes needed for the full configuration; follow with a normal plan.",
+      "source": "/terraform/cli/v1.12.x/commands/plan"
+    },
+    {
+      "id": "workflow-14",
+      "topic": "workflow",
+      "objective": "3f",
+      "prompt": "Which command previews a destroy operation without executing the proposed deletions?",
+      "options": [
+        "terraform plan -destroy",
+        "terraform destroy -auto-approve",
+        "terraform state rm",
+        "terraform fmt -destroy"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "plan -destroy creates a destruction plan. terraform destroy performs an apply in destroy mode after approval, unless approval is bypassed.",
+      "source": "/terraform/cli/v1.12.x/commands/destroy"
+    },
+    {
+      "id": "workflow-15",
+      "topic": "workflow",
+      "objective": "3g",
+      "prompt": "terraform fmt confirms that provider credentials are valid and that an apply will succeed.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "fmt rewrites configuration into canonical formatting. It does not validate authentication or predict the outcome of remote operations.",
+      "source": "/terraform/cli/v1.12.x/commands/fmt"
+    },
+    {
+      "id": "configuration-9",
+      "topic": "configuration",
+      "objective": "4c",
+      "prompt": "A root variable has a default, TF_VAR_region is set, and terraform plan -var='region=eu-central-1' is run locally. Which value wins?",
+      "options": [
+        "The variable default",
+        "TF_VAR_region",
+        "The explicitly supplied -var value",
+        "Terraform always prompts again"
+      ],
+      "answers": [
+        2
+      ],
+      "explanation": "For this local CLI scenario, command-line variable assignments take precedence over environment variables and defaults. Other variable files and ordered flags can also affect precedence.",
+      "source": "/terraform/language/v1.12.x/values/variables"
+    },
+    {
+      "id": "configuration-10",
+      "topic": "configuration",
+      "objective": "4c",
+      "prompt": "Which environment variable assigns the root input variable named instance_count?",
+      "options": [
+        "TF_VAR_instance_count",
+        "TF_LOG_instance_count",
+        "TF_INPUT_COUNT",
+        "TERRAFORM_OUTPUT_instance_count"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Terraform reads root input variables from environment variables named TF_VAR_<variable_name>. The value must still be compatible with the variable's type and validation.",
+      "source": "/terraform/language/v1.12.x/values/variables"
+    },
+    {
+      "id": "configuration-11",
+      "topic": "configuration",
+      "objective": "4c",
+      "prompt": "Which TWO files are automatically considered variable definition files by a local CLI run in the working directory?",
+      "options": [
+        "terraform.tfvars",
+        "production.auto.tfvars",
+        "notes.txt",
+        "production.tfvars without a -var-file argument"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "Terraform automatically loads terraform.tfvars, terraform.tfvars.json, and files ending in .auto.tfvars or .auto.tfvars.json. Arbitrarily named .tfvars files require -var-file.",
+      "source": "/terraform/language/v1.12.x/values/variables"
+    },
+    {
+      "id": "configuration-12",
+      "topic": "configuration",
+      "objective": "4c",
+      "prompt": "Which reference accesses a value named prefix declared in a locals block?",
+      "options": [
+        "locals.prefix",
+        "local.prefix",
+        "var.locals.prefix",
+        "output.prefix"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Local values are referenced through the singular local namespace. They let a module name and reuse expressions without exposing a new input variable.",
+      "source": "/terraform/language/v1.12.x/values/locals"
+    },
+    {
+      "id": "configuration-13",
+      "topic": "configuration",
+      "objective": "4c",
+      "prompt": "What does terraform output -raw endpoint do for a root output with a string value?",
+      "options": [
+        "Print the value without the usual string quotes",
+        "Delete the endpoint from state",
+        "Read every child resource attribute",
+        "Make the output encrypted"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "-raw prints a supported primitive output as a plain string, useful in scripts. Explicit output commands can expose sensitive output values; handle them carefully.",
+      "source": "/terraform/cli/v1.12.x/commands/output"
+    },
+    {
+      "id": "configuration-14",
+      "topic": "configuration",
+      "objective": "4d",
+      "prompt": "Which collection type removes duplicate string values and does not preserve positional ordering?",
+      "options": [
+        "list(string)",
+        "set(string)",
+        "tuple([string, string])",
+        "object({ first = string })"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "A set is an unordered collection of unique elements. Lists have indices and can contain duplicates; objects and tuples describe structured values.",
+      "source": "/terraform/language/v1.12.x/expressions/type-constraints"
+    },
+    {
+      "id": "configuration-15",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "What does this expression produce?",
+      "code": "[for name in [\"dev\", \"prod\"] : upper(name)]",
+      "options": [
+        "[\"DEV\", \"PROD\"]",
+        "[\"dev\", \"prod\"]",
+        "A map keyed by numeric resource IDs",
+        "A syntax error because functions cannot be used in for expressions"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "A for expression transforms each element. upper converts each string to uppercase, and square brackets construct a tuple result.",
+      "source": "/terraform/language/v1.12.x/expressions/for"
+    },
+    {
+      "id": "configuration-16",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "Which function best encodes a Terraform object as a correctly escaped JSON string?",
+      "options": [
+        "jsonencode",
+        "jsondecode",
+        "toset",
+        "fileexists"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "jsonencode converts Terraform values into JSON text. jsondecode performs the inverse operation, while handwritten string templates can introduce escaping errors.",
+      "source": "/terraform/language/v1.12.x/functions/jsonencode"
+    },
+    {
+      "id": "configuration-17",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A resource block uses count = 3. Which indices identify its instances?",
+      "options": [
+        "1, 2, 3",
+        "0, 1, 2",
+        "Only the key \"3\"",
+        "Random UUIDs selected by count"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "count creates indexed instances starting at zero. References can use count.index within the block and addresses such as resource_type.name[0] outside it.",
+      "source": "/terraform/language/v1.12.x/meta-arguments/count"
+    },
+    {
+      "id": "configuration-18",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "Which TWO values are directly supported by a resource's for_each argument?",
+      "options": [
+        "A map with known instance keys",
+        "A set of known, non-sensitive strings",
+        "Any unconverted list of objects",
+        "A set of unknown API-assigned IDs available only after apply"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "for_each accepts a map or a set of strings. Instance keys must be known before remote operations and cannot be sensitive. Lists are not implicitly converted to sets.",
+      "source": "/terraform/language/v1.12.x/meta-arguments/for_each"
+    },
+    {
+      "id": "configuration-19",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "In a resource using for_each over a map, what do each.key and each.value represent?",
+      "options": [
+        "The selected map key and its associated value",
+        "The root module's filename and provider version",
+        "The first and last resource IDs in state",
+        "The numeric count index and total count"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Each for_each instance exposes its map key and value through each.key and each.value. For a set of strings, the key and value are the same string.",
+      "source": "/terraform/language/v1.12.x/meta-arguments/for_each"
+    },
+    {
+      "id": "configuration-20",
+      "topic": "configuration",
+      "objective": "4f",
+      "prompt": "A database must be replaced. What limitation should you consider before using create_before_destroy?",
+      "options": [
+        "Both old and new objects may need to coexist, so quotas and unique-name rules must allow it",
+        "It turns replacement into a guaranteed in-place update",
+        "It prevents any provider API call",
+        "It automatically copies all database data"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "create_before_destroy changes replacement order, not platform constraints or data migration. Unique names, capacity, and service limits can prevent two simultaneous objects.",
+      "source": "/terraform/language/v1.12.x/meta-arguments/lifecycle"
+    },
+    {
+      "id": "configuration-21",
+      "topic": "configuration",
+      "objective": "4f",
+      "prompt": "A resource has lifecycle { prevent_destroy = true }. Does deleting its whole resource block preserve this protection?",
+      "options": [
+        "Yes, Terraform permanently remembers the protection regardless of configuration",
+        "No, the protection must remain present in configuration"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "prevent_destroy rejects destructive plans while the rule exists in configuration. Removing the resource block also removes that rule; use a supported removal-without-destruction workflow if ownership must end.",
+      "source": "/terraform/language/v1.12.x/meta-arguments/lifecycle"
+    },
+    {
+      "id": "configuration-22",
+      "topic": "configuration",
+      "objective": "4g",
+      "prompt": "How does a failed check block assertion differ from a failed resource precondition?",
+      "options": [
+        "Both always silently pass",
+        "A check reports a warning and continues, whereas a failed precondition blocks the relevant operation",
+        "Checks always destroy the resource",
+        "Preconditions only format files"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Check assertions are continuous validation that report warnings without blocking operations. Preconditions enforce assumptions and can stop the operation when evaluated as false.",
+      "source": "/terraform/language/v1.12.x/validate"
+    },
+    {
+      "id": "configuration-23",
+      "topic": "configuration",
+      "objective": "4h",
+      "prompt": "A provider supports a write-only password argument in Terraform 1.12. What distinguishes that argument from a normal sensitive argument?",
+      "options": [
+        "Its value is not persisted in Terraform plan or state artifacts",
+        "It is automatically safe to publish in source code",
+        "It works with every provider even without support",
+        "It prevents the remote service from ever receiving the password"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Write-only arguments pass values to the provider without persisting them in plan and state. They require provider support and do not remove source-code or external secret-handling risks.",
+      "source": "/terraform/language/v1.12.x/manage-sensitive-data"
+    },
+    {
+      "id": "configuration-24",
+      "topic": "configuration",
+      "objective": "4h",
+      "prompt": "A Vault data source retrieves a secret that is then used in an ordinary managed-resource argument. Is reading it from Vault alone enough to keep it out of Terraform state?",
+      "options": [
+        "Yes, any Vault value is automatically ephemeral",
+        "No, retrieved values may still persist; use supported non-persistent contexts and secure state handling"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "A secrets manager controls secret access, not every downstream artifact. Ordinary data-source and resource values can be stored in state; sensitive redaction alone does not prevent persistence.",
+      "source": "/terraform/language/v1.12.x/manage-sensitive-data"
+    },
+    {
+      "id": "modules-7",
+      "topic": "modules",
+      "objective": "5c",
+      "prompt": "A child module declares a required input variable with no default. The caller omits its argument. What happens?",
+      "options": [
+        "The child automatically reads a same-named root variable",
+        "Terraform reports a missing required module argument",
+        "Terraform selects a random value",
+        "The variable becomes an output automatically"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "A child module's required inputs must be supplied by its caller. Root input prompting does not make child module variables globally inherited.",
+      "source": "/terraform/language/v1.12.x/modules/syntax"
+    },
+    {
+      "id": "modules-8",
+      "topic": "modules",
+      "objective": "5a",
+      "prompt": "How does Terraform interpret .tf files in the same module directory?",
+      "options": [
+        "As one module configuration rather than independent sequential scripts",
+        "As separate states applied in filename order",
+        "Only main.tf is loaded",
+        "Only files referenced by an include statement are loaded"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Terraform combines the configuration files in a module directory. Names such as main.tf, variables.tf, and outputs.tf are organizational conventions, not an execution sequence.",
+      "source": "/terraform/language/v1.12.x/files"
+    },
+    {
+      "id": "modules-9",
+      "topic": "modules",
+      "objective": "5d",
+      "prompt": "How can a Git module source select a specific tag or commit?",
+      "options": [
+        "Add a supported ref query parameter to the source URL",
+        "Use the registry-only version argument for every Git URL",
+        "Rename terraform.tfstate to the tag",
+        "Set required_version to the commit hash"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Git module sources support a ref query parameter selecting a branch, tag, or commit. The module version argument is for registry modules.",
+      "source": "/terraform/language/v1.12.x/modules/sources"
+    },
+    {
+      "id": "modules-10",
+      "topic": "modules",
+      "objective": "5c",
+      "prompt": "A child module needs an aliased AWS configuration supplied by its caller. Which TWO elements are relevant?",
+      "options": [
+        "Declare the accepted alias with configuration_aliases in the child provider requirements",
+        "Pass the caller's configuration through the module block's providers map",
+        "Put the alias in the child's output description only",
+        "Assume aliases are always inherited automatically"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "configuration_aliases declares alternate provider configurations that the child can reference. The caller maps those names to its configurations using providers; aliases are not automatically inherited.",
+      "source": "/terraform/language/v1.12.x/modules/develop/providers"
+    },
+    {
+      "id": "modules-11",
+      "topic": "modules",
+      "objective": "5b",
+      "prompt": "A child module contains a local value named internal_name. Can its parent reference module.child.local.internal_name directly?",
+      "options": [
+        "Yes, local values are exported automatically",
+        "No, expose a suitable output if the parent needs that value"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Local values are private to their module. The parent's interface to child values is the child's declared outputs, not direct access to its internal locals.",
+      "source": "/terraform/language/v1.12.x/values/outputs"
+    },
+    {
+      "id": "modules-12",
+      "topic": "modules",
+      "objective": "5c",
+      "prompt": "A module call named network uses for_each = { prod = \"eu-west-1\" }. How do you read that instance's subnet_id output?",
+      "options": [
+        "module.network[\"prod\"].subnet_id",
+        "module.network.subnet_id[\"prod\"]",
+        "var.network.prod.subnet_id",
+        "output.network[0]"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "A module using for_each has a map of module instances keyed by its for_each keys. Select the instance before reading its exported output.",
+      "source": "/terraform/language/v1.12.x/expressions/references"
+    },
+    {
+      "id": "state-11",
+      "topic": "state",
+      "objective": "6c",
+      "prompt": "Can a backend block use var.bucket to choose its state storage bucket?",
+      "options": [
+        "Yes, backend configuration is evaluated after all resource expressions",
+        "No, backend configuration cannot refer to named values such as input variables"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Backend initialization happens before ordinary configuration evaluation. Backend blocks cannot use variables, locals, or data-source values; partial configuration can supply settings during init.",
+      "source": "/terraform/language/v1.12.x/backend"
+    },
+    {
+      "id": "state-12",
+      "topic": "state",
+      "objective": "6c",
+      "prompt": "What is a risk of passing backend credentials directly through -backend-config?",
+      "options": [
+        "They can be stored in local working-directory metadata and saved plans",
+        "They make all backend locking impossible",
+        "They are always removed from every artifact",
+        "They automatically become public provider versions"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Backend configuration can be persisted in .terraform metadata and plan files. Prefer the backend's supported environment or credential mechanisms and protect all sensitive artifacts.",
+      "source": "/terraform/language/v1.12.x/backend"
+    },
+    {
+      "id": "state-13",
+      "topic": "state",
+      "objective": "6c",
+      "prompt": "Which TWO statements about terraform_remote_state are important for security?",
+      "options": [
+        "It exposes root outputs through its data-source interface",
+        "Reading outputs requires access to the state snapshot, which may contain other sensitive values",
+        "It provides an access boundary protecting all non-output values in the snapshot",
+        "It can only read local state"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "Although the interface returns root outputs, the reader must be able to access the underlying state snapshot. Do not treat output selection as a state-access security boundary.",
+      "source": "/terraform/language/v1.12.x/state/remote-state-data"
+    },
+    {
+      "id": "state-14",
+      "topic": "state",
+      "objective": "6a",
+      "prompt": "What do Terraform CLI workspaces normally separate when using the same configuration?",
+      "options": [
+        "State instances",
+        "Provider source code licenses",
+        "The contents of every .tf file automatically",
+        "Cloud IAM permissions with a guaranteed security boundary"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "CLI workspaces provide separate state instances for one configuration. They do not automatically create separate configuration or credential boundaries and are not a substitute for access isolation.",
+      "source": "/terraform/language/v1.12.x/state/workspaces"
+    },
+    {
+      "id": "state-15",
+      "topic": "state",
+      "objective": "6d",
+      "prompt": "A resource name changes from aws_instance.api to aws_instance.service, but no moved block or state move is supplied. What may a normal plan propose?",
+      "options": [
+        "Destroy the old address's object and create an object for the new address",
+        "Infer every rename from matching descriptions automatically",
+        "Change only the .tf filename",
+        "Skip the resource forever"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Addresses identify managed instances. Without an explicit move, Terraform can treat the old address as removed and the new address as a new resource, even if arguments are similar.",
+      "source": "/terraform/language/v1.12.x/modules/develop/refactoring"
+    },
+    {
+      "id": "maintenance-7",
+      "topic": "maintenance",
+      "objective": "7a",
+      "prompt": "What determines the ID format accepted when importing an existing resource?",
+      "options": [
+        "The provider's documentation for that resource type",
+        "A universal Terraform UUID assigned to all cloud objects",
+        "The local variable name",
+        "The number of outputs"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Providers define resource-specific import identifiers. They may be simple IDs or composite strings; consult the resource's import documentation.",
+      "source": "/terraform/cli/v1.12.x/import/usage"
+    },
+    {
+      "id": "maintenance-8",
+      "topic": "maintenance",
+      "objective": "7a",
+      "prompt": "After an import, the configuration differs from the object's existing settings. Which step is safest before applying?",
+      "options": [
+        "Review a normal plan and reconcile unintended differences",
+        "Assume import permanently disables future changes",
+        "Delete the imported object manually",
+        "Run apply -auto-approve without a review"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Import adds an object's state association, not an exemption from configuration management. A later plan may propose updates or replacement if the configuration differs.",
+      "source": "/terraform/language/v1.12.x/import"
+    },
+    {
+      "id": "maintenance-9",
+      "topic": "maintenance",
+      "objective": "7b",
+      "prompt": "Which command outputs the current state snapshot, useful for a controlled backup before state maintenance?",
+      "options": [
+        "terraform state pull",
+        "terraform state list -delete",
+        "terraform fmt -backup-state",
+        "terraform login -state"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "state pull retrieves the current state and prints it to standard output. State may contain secrets, so protect the backup and avoid leaking it into logs.",
+      "source": "/terraform/cli/v1.12.x/commands/state/pull"
+    },
+    {
+      "id": "maintenance-10",
+      "topic": "maintenance",
+      "objective": "7c",
+      "prompt": "Which TWO settings work together to write verbose Terraform logs to a file?",
+      "options": [
+        "TF_LOG set to a log level such as DEBUG",
+        "TF_LOG_PATH set to the desired file path",
+        "TF_VAR_log_path alone",
+        "TF_INPUT=false as the log level"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "TF_LOG enables logging, while TF_LOG_PATH selects an output file. TF_LOG must remain enabled for the path setting to take effect. Protect the file because logs may include secrets.",
+      "source": "/terraform/internals/v1.12.x/debugging"
+    },
+    {
+      "id": "maintenance-11",
+      "topic": "maintenance",
+      "objective": "7b",
+      "prompt": "Which command is designed to inspect Terraform expressions interactively?",
+      "options": [
+        "terraform console",
+        "terraform destroy",
+        "terraform providers mirror",
+        "terraform fmt"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "terraform console provides an interactive expression evaluator, including access to configuration values and available state. It is useful for diagnosing expressions rather than editing state JSON manually.",
+      "source": "/terraform/cli/v1.12.x/commands/console"
+    },
+    {
+      "id": "maintenance-12",
+      "topic": "maintenance",
+      "objective": "7c",
+      "prompt": "Before sharing TRACE logs for troubleshooting, what is the most important precaution?",
+      "options": [
+        "Review and redact credentials or other sensitive data",
+        "Rename the file to .tf so secrets disappear",
+        "Publish the raw log because TRACE always redacts everything",
+        "Delete all configuration instead"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Verbose logs can contain sensitive data from Terraform and providers. Store them securely and inspect them before sharing through an approved support channel.",
+      "source": "/terraform/internals/v1.12.x/debugging"
+    },
+    {
+      "id": "hcp-7",
+      "topic": "hcp",
+      "objective": "8a",
+      "prompt": "A VCS-connected HCP Terraform workspace receives a pull request against its tracked branch. What run type is normally used to preview those changes?",
+      "options": [
+        "A speculative plan that cannot be applied directly",
+        "An automatic destroy of production",
+        "A mandatory local state deletion",
+        "A provider installation with no plan"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Pull requests normally trigger speculative plans for review. The plan-only run previews changes without becoming an applyable run.",
+      "source": "/terraform/cloud-docs/workspaces/run/modes-and-options"
+    },
+    {
+      "id": "hcp-8",
+      "topic": "hcp",
+      "objective": "8a",
+      "prompt": "Auto-apply is disabled in an HCP Terraform workspace. After a successful standard plan, what normally happens?",
+      "options": [
+        "The run waits for an authorized confirmation before apply",
+        "The plan automatically deletes itself and all resources",
+        "All team members lose workspace access",
+        "The cloud provider applies the plan independently of Terraform"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Standard plan-and-apply runs wait for confirmation when automatic application is not enabled. Permissions and policy checks can impose additional requirements.",
+      "source": "/terraform/cloud-docs/workspaces/run/modes-and-options"
+    },
+    {
+      "id": "hcp-9",
+      "topic": "hcp",
+      "objective": "8c",
+      "prompt": "What is the purpose of a run trigger between HCP Terraform workspaces?",
+      "options": [
+        "Queue a run in a dependent workspace after a source workspace successfully applies",
+        "Copy every resource into the dependent workspace's state",
+        "Merge the workspaces' variable names permanently",
+        "Disable both workspaces' state locks"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Run triggers coordinate dependent workspace workflows. They do not transfer resource ownership or automatically merge states; downstream configuration must still consume any required shared values.",
+      "source": "/terraform/cloud-docs/workspaces/settings/run-triggers"
+    },
+    {
+      "id": "hcp-10",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "Why should an organization grant HCP Terraform access through teams with appropriate workspace or project permissions?",
+      "options": [
+        "To apply least privilege and manage shared access consistently",
+        "To make every user an organization owner",
+        "To prevent all Terraform plans",
+        "To eliminate the need for cloud credentials"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Teams and scoped permissions support controlled collaboration. Grant only the access needed for the workflow rather than broad administrative rights.",
+      "source": "/terraform/cloud-docs/users-teams-organizations/teams"
+    },
+    {
+      "id": "hcp-11",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "Which feature can check whether a proposed infrastructure change meets an organization's rules before apply?",
+      "options": [
+        "Policy enforcement using supported Sentinel or OPA policies",
+        "Changing the dashboard color",
+        "terraform fmt alone",
+        "A public state download link"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Policy enforcement evaluates proposed changes against organizational rules. Enforcement behavior and available features depend on policy settings and the HCP Terraform edition.",
+      "source": "/terraform/cloud-docs/policy-enforcement"
+    },
+    {
+      "id": "hcp-12",
+      "topic": "hcp",
+      "objective": "8d",
+      "prompt": "Where should a terraform login API token be kept instead of hardcoding it in a committed cloud block?",
+      "options": [
+        "A supported CLI credentials configuration or credentials helper",
+        "An output named public_token",
+        "The module's description string",
+        "A public provider registry README"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Terraform supports CLI credential storage and helpers. The cloud block selects the HCP organization/workspace connection, but secret tokens should not be embedded in version-controlled configuration.",
+      "source": "/terraform/cli/v1.12.x/config/config-file"
+    },
+    {
+      "id": "hcp-13",
+      "topic": "hcp",
+      "objective": "8a",
+      "prompt": "What distinguishes agent execution mode from local execution mode in HCP Terraform?",
+      "options": [
+        "An agent executes HCP-managed runs in an environment you provide, while local mode executes Terraform through your local CLI",
+        "Agent mode requires state to be public",
+        "Local mode automatically runs inside an HCP-hosted worker",
+        "Agent mode removes all provider authentication"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Agent execution lets HCP Terraform coordinate runs on agents in your infrastructure, including private-network access. In local execution mode the CLI runs locally while HCP Terraform provides state storage.",
+      "source": "/terraform/cloud-docs/workspaces/settings"
+    },
+    {
+      "id": "hcp-14",
+      "topic": "hcp",
+      "objective": "8c",
+      "prompt": "Which TWO variable categories can be configured in an HCP Terraform workspace?",
+      "options": [
+        "Terraform input variables",
+        "Environment variables for the run environment",
+        "Only root outputs",
+        "Only provider package checksums"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "Workspace variables can be Terraform inputs or environment variables. The distinction matters: an environment variable such as a provider's credential setting is not automatically a same-named Terraform input.",
+      "source": "/terraform/cloud-docs/workspaces/variables"
+    },
+    {
+      "id": "hcp-15",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "An HCP Terraform health assessment detects infrastructure drift. Does that assessment automatically repair every detected change?",
+      "options": [
+        "Yes, all drift is always immediately applied away",
+        "No, detection informs you of differences; reconciliation requires an appropriate reviewed workflow"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "Health assessments detect drift and validation issues. Detection is not automatic remediation; decide whether to update configuration or run an approved reconciliation.",
+      "source": "/terraform/cloud-docs/workspaces/health"
+    },
+    {
+      "id": "configuration-25",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A provider resource accepts several nested rule blocks. Their contents come from a list of objects. Which construct can generate one nested block for each list item?",
+      "options": [
+        "A dynamic block with for_each and content",
+        "A second required_providers block",
+        "A backend named rule",
+        "terraform state push"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "A dynamic block iterates over a collection and constructs repeatable nested blocks expected by the enclosing provider schema. A for expression instead produces a value.",
+      "source": "/terraform/language/v1.12.x/expressions/dynamic-blocks"
+    },
+    {
+      "id": "configuration-26",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "An engineer tries to generate lifecycle blocks inside a resource using dynamic \"lifecycle\". Why is this not supported?",
+      "options": [
+        "Terraform must process lifecycle meta-arguments before it can safely evaluate dynamic block expressions",
+        "Dynamic blocks are supported only in output blocks",
+        "Lifecycle blocks must always be supplied by a remote backend",
+        "The dynamic label must be a numeric index"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Dynamic blocks generate schema-defined nested blocks, not lifecycle or provisioner meta-argument blocks. Terraform needs those meta-arguments early when constructing its graph.",
+      "source": "/terraform/language/v1.12.x/expressions/dynamic-blocks"
+    },
+    {
+      "id": "configuration-27",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A module calculates the number of requested environments with this expression. What is the result?",
+      "code": "length({ dev = \"small\", staging = \"medium\", prod = \"large\" })",
+      "options": [
+        "The total number of characters in the values",
+        "3",
+        "2",
+        "The string \"large\""
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "For a map, length returns the number of entries, not the length of its keys or values. This map contains three entries.",
+      "source": "/terraform/language/v1.12.x/functions/length"
+    },
+    {
+      "id": "configuration-28",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "An optional tuning key is absent from a map. What value does this expression return?",
+      "code": "lookup({ retries = 4 }, \"timeout\", 30)",
+      "options": [
+        "4",
+        "null",
+        "30",
+        "A missing-key error even though a default was provided"
+      ],
+      "answers": [
+        2
+      ],
+      "explanation": "lookup returns the value for the requested map key, or its third argument if that key is absent. Here timeout is absent, so the result is 30.",
+      "source": "/terraform/language/v1.12.x/functions/lookup"
+    },
+    {
+      "id": "configuration-29",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A binary artifact already exists before a run, and an argument expects its Base64-encoded bytes. Which TWO statements are correct?",
+      "options": [
+        "filebase64(path) can read and encode the artifact's raw bytes",
+        "file(path) assumes UTF-8 text and errors on invalid UTF-8",
+        "Base64 encoding encrypts the artifact",
+        "file functions wait for a resource to generate the file later in the same apply"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "filebase64 represents raw file bytes as Base64; file decodes UTF-8 text. Neither participates in the dependency graph, so the file must already exist when the run begins. Encoding is not encryption.",
+      "source": "/terraform/language/v1.12.x/functions/filebase64"
+    },
+    {
+      "id": "configuration-30",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A module combines base tags and environment-specific overrides. Which value is assigned to Owner?",
+      "code": "merge({ Owner = \"platform\", CostCenter = \"shared\" }, { Owner = \"payments\" })",
+      "options": [
+        "\"platform\"",
+        "\"payments\"",
+        "[\"platform\", \"payments\"]",
+        "A duplicate-key error"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "merge combines maps or objects. When arguments contain the same key, the later argument wins, while other keys remain present.",
+      "source": "/terraform/language/v1.12.x/functions/merge"
+    },
+    {
+      "id": "configuration-31",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A module chooses the first usable display name. What does this expression return?",
+      "code": "coalesce(null, \"\", \"billing-api\", \"fallback\")",
+      "options": [
+        "null",
+        "\"\"",
+        "\"fallback\"",
+        "\"billing-api\""
+      ],
+      "answers": [
+        3
+      ],
+      "explanation": "coalesce returns the first argument that is neither null nor an empty string. Arguments must have compatible types.",
+      "source": "/terraform/language/v1.12.x/functions/coalesce"
+    },
+    {
+      "id": "configuration-32",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A module combines two subnet-name lists with concat. What is the result?",
+      "code": "concat([\"public\", \"shared\"], [\"shared\", \"private\"])",
+      "options": [
+        "[\"public\", \"shared\", \"shared\", \"private\"]",
+        "[\"public\", \"shared\", \"private\"]",
+        "[[\"public\", \"shared\"], [\"shared\", \"private\"]]",
+        "\"publicsharedsharedprivate\""
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "concat joins list elements in sequence. It does not remove duplicates, flatten arbitrary nested elements, or concatenate strings.",
+      "source": "/terraform/language/v1.12.x/functions/concat"
+    },
+    {
+      "id": "configuration-33",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A variable validation rule permits only dev and prod. Which expression evaluates to false for the string staging?",
+      "options": [
+        "contains([\"dev\", \"prod\"], \"staging\")",
+        "length([\"dev\", \"prod\"]) == 2",
+        "\"staging\" == \"staging\"",
+        "contains([\"dev\", \"prod\", \"staging\"], \"staging\")"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "contains tests whether a list, tuple, or set contains an equal element. Staging is not present in the two-element allowed list.",
+      "source": "/terraform/language/v1.12.x/functions/contains"
+    },
+    {
+      "id": "configuration-34",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A module receives parallel lists of environment names and replica counts. Which expression creates the corresponding map?",
+      "options": [
+        "zipmap([\"dev\", \"prod\"], [1, 4])",
+        "concat([\"dev\", \"prod\"], [1, 4])",
+        "keys([1, 4])",
+        "length([\"dev\", \"prod\"])"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "zipmap associates keys and values at matching indices, producing dev = 1 and prod = 4 here. Both lists must have the same length and keys must be strings.",
+      "source": "/terraform/language/v1.12.x/functions/zipmap"
+    },
+    {
+      "id": "configuration-35",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A resource's managed tag is assigned timestamp() on every run. Why can that cause repeated proposed updates?",
+      "options": [
+        "The function returns an apply-time timestamp that changes over time",
+        "timestamp() always returns the resource's creation date",
+        "The function automatically locks the tag against updates",
+        "Timestamp strings are ignored in every plan"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "timestamp returns a changing UTC RFC 3339 timestamp and is not predictable during planning. Using it directly as a managed argument can create recurring differences; use intentional time-management semantics instead.",
+      "source": "/terraform/language/v1.12.x/functions/timestamp"
+    },
+    {
+      "id": "configuration-36",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "For a two-element list, how do these two expressions differ?",
+      "code": "element([\"zone-a\", \"zone-b\"], 2)\n[\"zone-a\", \"zone-b\"][2]",
+      "options": [
+        "Both return \"zone-a\"",
+        "element returns \"zone-a\" by wrapping; bracket indexing reports an out-of-range error",
+        "Both return \"zone-b\"",
+        "Bracket indexing wraps but element reports an error"
+      ],
+      "answers": [
+        1
+      ],
+      "explanation": "element has wrap-around behavior based on the index modulo the nonempty list's length. Ordinary bracket indexing is zero-based and does not wrap beyond the valid indices.",
+      "source": "/terraform/language/v1.12.x/functions/element"
+    },
+    {
+      "id": "configuration-37",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A log label needs only the calendar date from an RFC 3339 timestamp. What does this expression produce?",
+      "code": "formatdate(\"YYYY-MM-DD\", \"2026-11-07T12:30:00Z\")",
+      "options": [
+        "\"2026-11-07\"",
+        "\"12:30:00\"",
+        "\"YYYY-MM-DD\"",
+        "A Unix epoch number"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "formatdate renders an RFC 3339 timestamp according to its format specification. YYYY, MM, and DD select the four-digit year, two-digit month, and two-digit day.",
+      "source": "/terraform/language/v1.12.x/functions/formatdate"
+    },
+    {
+      "id": "configuration-38",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "var.servers is a list of objects with id attributes. Which expression concisely extracts those IDs in list order?",
+      "options": [
+        "var.servers[*].id",
+        "var.servers.id[*]",
+        "keys(var.servers)",
+        "var.servers[\"id\"]"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "A full splat projects an attribute from each element of a list, set, or tuple. Resources using for_each are maps, so use a for expression rather than this splat pattern for them.",
+      "source": "/terraform/language/v1.12.x/expressions/splat"
+    },
+    {
+      "id": "configuration-39",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A map is { zeta = 1, alpha = 9 }. How are keys(map) and values(map) ordered?",
+      "options": [
+        "Keys are [\"alpha\", \"zeta\"]; values are [9, 1] in corresponding key order",
+        "Keys are [\"zeta\", \"alpha\"]; values are sorted numerically as [1, 9]",
+        "Both are always randomly ordered",
+        "values returns [\"alpha\", \"zeta\"]"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "keys returns lexicographically ordered map keys. values orders the corresponding values by those keys, not by the values themselves.",
+      "source": "/terraform/language/v1.12.x/functions/values"
+    },
+    {
+      "id": "configuration-40",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "On a Unix host, which TWO expressions correctly manipulate the path string /srv/config/app.json without reading file contents?",
+      "options": [
+        "dirname(\"/srv/config/app.json\") returns \"/srv/config\"",
+        "basename(\"/srv/config/app.json\") returns \"app.json\"",
+        "basename(\"/srv/config/app.json\") parses its JSON contents",
+        "abspath(\"config/app.json\") encrypts the file"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "dirname removes the final path component; basename keeps it. These manipulate strings, not file contents. abspath makes a relative path absolute using the working directory; none of these functions encrypts data.",
+      "source": "/terraform/language/v1.12.x/functions/dirname"
+    },
+    {
+      "id": "configuration-41",
+      "topic": "configuration",
+      "objective": "4g",
+      "prompt": "A validation rule should reject a string that cannot be converted to a number. Which expression turns the conversion error into a boolean result?",
+      "options": [
+        "can(tonumber(var.port))",
+        "length(var.port)",
+        "tostring(var.port)",
+        "sensitive(var.port)"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "can evaluates an expression and returns whether it succeeds, which is useful in input validation. It does not catch statically invalid references such as undeclared top-level objects.",
+      "source": "/terraform/language/v1.12.x/functions/can"
+    },
+    {
+      "id": "configuration-42",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "local.decoded is a declared object decoded from a file and has no optional label attribute. Which expression can normalize that absent attribute to \"unknown\"?",
+      "options": [
+        "try(local.decoded.label, \"unknown\")",
+        "coalesce(local.decoded.label, \"unknown\") always catches missing-attribute errors",
+        "local.undeclared.label",
+        "length(local.decoded.label)"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "try can handle a dynamic missing-attribute error in a declared data structure and choose the first successful expression. It is not a way to suppress statically invalid references or unrelated infrastructure errors.",
+      "source": "/terraform/language/v1.12.x/functions/try"
+    },
+    {
+      "id": "configuration-43",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "An optional resource uses count = var.enabled ? 1 : 0. Its output is one(resource_type.optional[*].id). What happens when enabled is false?",
+      "options": [
+        "The output expression evaluates to null",
+        "one creates a missing resource",
+        "It always reports an error for an empty collection",
+        "It returns an arbitrary previous resource ID"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "one accepts a collection with zero or one elements: zero returns null and one returns that element. It errors for two or more elements, making it useful for optional single-instance outputs.",
+      "source": "/terraform/language/v1.12.x/functions/one"
+    },
+    {
+      "id": "configuration-44",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A module uses this expression to construct port offsets. Which list results?",
+      "code": "range(2, 8, 2)",
+      "options": [
+        "[2, 4, 6]",
+        "[2, 4, 6, 8]",
+        "[0, 2, 4, 6]",
+        "[8, 6, 4, 2]"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "range begins at the start value, adds the step repeatedly, and excludes the limit. Here it stops before 8.",
+      "source": "/terraform/language/v1.12.x/functions/range"
+    },
+    {
+      "id": "configuration-45",
+      "topic": "configuration",
+      "objective": "4f",
+      "prompt": "An external service manages a resource's tags after creation. With lifecycle { ignore_changes = [tags] }, which TWO statements are correct?",
+      "options": [
+        "Configured tags are considered when Terraform creates the resource",
+        "Later tag differences are ignored when planning updates to that resource",
+        "The resource is removed from Terraform state",
+        "Every attribute becomes immune to deletion or replacement"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "ignore_changes supports shared management of selected attributes: they are considered for creation but ignored for updates. The resource remains managed, and this is not prevent_destroy.",
+      "source": "/terraform/language/v1.12.x/meta-arguments/lifecycle"
+    },
+    {
+      "id": "configuration-46",
+      "topic": "configuration",
+      "objective": "4f",
+      "prompt": "A resource must be replaced whenever a referenced managed resource instance is updated or replaced. Which lifecycle rule expresses that relationship?",
+      "options": [
+        "replace_triggered_by",
+        "ignore_changes",
+        "prevent_destroy",
+        "A variable description"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "replace_triggered_by bases replacement on planned actions for referenced managed resources or changes to their attributes. Plain input variables have no planned actions of their own and cannot be referenced directly in this rule.",
+      "source": "/terraform/language/v1.12.x/meta-arguments/lifecycle"
+    },
+    {
+      "id": "configuration-47",
+      "topic": "configuration",
+      "objective": "4g",
+      "prompt": "A resource's postcondition evaluates to false after creation. What does Terraform do?",
+      "options": [
+        "Report an error and prevent dependent operations, without automatically rolling back the created object",
+        "Automatically roll back every resource created in the apply",
+        "Treat the failure as only a check-block warning",
+        "Rewrite the condition to true in the source files"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Postconditions enforce guarantees after resource or data-source evaluation. Failure blocks downstream operations. Terraform does not provide a general rollback of actions that already succeeded.",
+      "source": "/terraform/language/v1.12.x/meta-arguments/lifecycle"
+    },
+    {
+      "id": "configuration-48",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "A module needs a readable multiline text message rather than JSON. Which HCL string syntax can represent it?",
+      "options": [
+        "A heredoc beginning with <<EOM and ending with EOM on its own line",
+        "A resource block whose type is multiline",
+        "Unquoted prose across several lines",
+        "A backend block containing the text"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Heredoc strings delimit multiline text with a chosen marker. For structured JSON or YAML, prefer encoding functions instead of assembling those formats by hand.",
+      "source": "/terraform/language/v1.12.x/expressions/strings"
+    },
+    {
+      "id": "configuration-49",
+      "topic": "configuration",
+      "objective": "4d",
+      "prompt": "A value needs a string name and a numeric replica count. Why is object({ name = string, replicas = number }) more suitable than map(string)?",
+      "options": [
+        "It specifies named attributes with different types",
+        "Maps cannot have any keys",
+        "Objects automatically create cloud resources",
+        "A map(string) preserves numbers without converting them"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "An object defines an attribute schema with potentially different types. A map requires one common element type, so map(string) does not express the intended mixed-type interface.",
+      "source": "/terraform/language/v1.12.x/expressions/type-constraints"
+    },
+    {
+      "id": "configuration-50",
+      "topic": "configuration",
+      "objective": "4b",
+      "prompt": "A configuration declares data \"aws_vpc\" \"existing\". Which expression reads its id attribute?",
+      "options": [
+        "data.aws_vpc.existing.id",
+        "aws_vpc.existing.id",
+        "var.aws_vpc.existing.id",
+        "module.data.aws_vpc.id"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Data-source references use data.<type>.<name>.<attribute>. Omitting data instead refers to a managed resource address, which is a different namespace.",
+      "source": "/terraform/language/v1.12.x/expressions/references"
+    },
+    {
+      "id": "configuration-51",
+      "topic": "configuration",
+      "objective": "4e",
+      "prompt": "An optional monitoring resource should have no instance when monitoring_enabled is false. Which count expression accomplishes this?",
+      "options": [
+        "var.monitoring_enabled ? 1 : 0",
+        "var.monitoring_enabled ? 0 : 1",
+        "1",
+        "\"disabled\""
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "count accepts a whole number of instances. A false conditional selecting 0 creates no instance; true selects one.",
+      "source": "/terraform/language/v1.12.x/meta-arguments/count"
+    },
+    {
+      "id": "state-16",
+      "topic": "state",
+      "objective": "6c",
+      "prompt": "A working directory should adopt backend settings that already point to the correct existing state, without copying state from its previous backend. Which init option matches that intent?",
+      "options": [
+        "-reconfigure",
+        "-migrate-state",
+        "-upgrade",
+        "-get=false"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "init -reconfigure disregards the previously recorded backend configuration without migrating existing state. It is not interchangeable with -migrate-state; verify the intended destination before proceeding.",
+      "source": "/terraform/cli/v1.12.x/commands/init"
+    },
+    {
+      "id": "state-17",
+      "topic": "state",
+      "objective": "6c",
+      "prompt": "A repository declares backend \"s3\" {} and supplies non-secret bucket and region settings from backend.hcl during initialization. What is this pattern called?",
+      "options": [
+        "Partial backend configuration",
+        "Provider alias inheritance",
+        "An ephemeral resource",
+        "A module output"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Partial configuration leaves backend arguments to be supplied during init, for example with -backend-config=backend.hcl. The root still declares the backend type, and sensitive credentials should use supported credential mechanisms.",
+      "source": "/terraform/language/v1.12.x/backend"
+    },
+    {
+      "id": "state-18",
+      "topic": "state",
+      "objective": "6a",
+      "prompt": "An initialized directory uses CLI workspaces and no new workspace has been created. Which workspace is initially selected?",
+      "options": [
+        "default",
+        "production",
+        "The directory's Git branch name",
+        "The HCP organization name"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Terraform begins with a CLI workspace named default. Additional workspaces are explicit separate state instances; they are not automatically derived from Git branches.",
+      "source": "/terraform/language/v1.12.x/state/workspaces"
+    },
+    {
+      "id": "maintenance-13",
+      "topic": "maintenance",
+      "objective": "7b",
+      "prompt": "CI needs to inspect actions in a saved plan as machine-readable data. Which TWO statements are correct?",
+      "options": [
+        "terraform show -json reviewed.tfplan produces a JSON plan representation",
+        "The resulting JSON can expose sensitive values and must be protected",
+        "terraform show always applies the saved plan",
+        "Adding -json encrypts the plan values"
+      ],
+      "answers": [
+        0,
+        1
+      ],
+      "explanation": "show inspects state or plans without applying them. Its JSON output supports automation but can include sensitive data in plain text.",
+      "source": "/terraform/cli/v1.12.x/commands/show"
+    },
+    {
+      "id": "workflow-17",
+      "topic": "workflow",
+      "objective": "3d",
+      "prompt": "An engineer wants to visualize configuration dependency relationships with Graphviz. Which Terraform command produces DOT-format graph text?",
+      "options": [
+        "terraform graph",
+        "terraform output -raw",
+        "terraform state rm",
+        "terraform fmt -graph"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "graph emits a dependency representation in DOT format that tools such as Graphviz can render. It does not itself execute the proposed infrastructure changes.",
+      "source": "/terraform/cli/v1.12.x/commands/graph"
+    },
+    {
+      "id": "maintenance-15",
+      "topic": "maintenance",
+      "objective": "7b",
+      "prompt": "During controlled recovery, terraform state push backup.tfstate refuses to overwrite a destination with a higher serial. Why should you not immediately add -force?",
+      "options": [
+        "The destination may contain newer state information that the backup would overwrite",
+        "-force repairs every remote object automatically",
+        "A higher serial means the provider is not installed",
+        "The check only protects formatting preferences"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "state push checks lineage and serial to reduce the risk of overwriting unrelated or newer state. -force bypasses those protections and can lose state information; investigate and preserve backups before recovery.",
+      "source": "/terraform/cli/v1.12.x/commands/state/push"
+    },
+    {
+      "id": "maintenance-16",
+      "topic": "maintenance",
+      "objective": "7b",
+      "prompt": "A coordinated refactor renames a resource block while retaining the same remote object. Which CLI command can change its state binding to the new address?",
+      "options": [
+        "terraform state mv OLD_ADDRESS NEW_ADDRESS",
+        "terraform destroy OLD_ADDRESS",
+        "terraform fmt NEW_ADDRESS",
+        "terraform init -replace-address"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "state mv rebinds a tracked object to a compatible new address without recreating it. Coordinate with collaborators and update configuration; a moved block is a reviewable configuration-driven alternative.",
+      "source": "/terraform/cli/v1.12.x/commands/state/mv"
+    },
+    {
+      "id": "fundamentals-16",
+      "topic": "fundamentals",
+      "objective": "2a",
+      "prompt": "A provider version conflict appears to come from a child module. Which CLI command helps identify where provider requirements were introduced?",
+      "options": [
+        "terraform providers",
+        "terraform workspace delete",
+        "terraform output -raw provider",
+        "terraform fmt -recursive"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "terraform providers displays provider requirements and their origins in the configuration's module tree. It helps diagnose dependency constraints rather than modifying them silently.",
+      "source": "/terraform/cli/v1.12.x/commands/providers"
+    },
+    {
+      "id": "configuration-52",
+      "topic": "configuration",
+      "objective": "4g",
+      "prompt": "As additional hands-on practice beyond the explicit 004 objective checklist, an author runs Terraform tests with a run block whose command is omitted. Which precaution is important?",
+      "options": [
+        "Tests default to apply and can create real infrastructure, so use a safe test environment and account for cost",
+        "Tests never contact providers or create resources",
+        "Tests always use production state directly",
+        "Tests only check indentation"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Terraform test defaults run blocks to command = apply and uses test-specific state. command = plan avoids creating infrastructure in that run, and mocks can support unit tests. This is supplementary learning, not an explicitly listed 004 exam subobjective.",
+      "source": "/terraform/language/v1.12.x/tests"
+    },
+    {
+      "id": "hcp-16",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "An HCP run displays a monthly cost estimate. Why should a reviewer not treat that number as a guaranteed cloud bill?",
+      "options": [
+        "Not every resource is estimable, and usage-based costs may be unpredictable",
+        "HCP pays all cloud bills shown in the estimate",
+        "The estimate prevents resources from consuming billable capacity",
+        "Cost estimation deletes every unsupported resource"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "HCP cost estimation summarizes supported resource costs and changes. It is an estimate, not a billing guarantee; some resources have no available estimate or depend on actual usage.",
+      "source": "/terraform/cloud-docs/workspaces/cost-estimation"
+    },
+    {
+      "id": "hcp-17",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "An organization wants the same Sentinel rules evaluated for several workspaces. Which construct groups policies and defines where they apply?",
+      "options": [
+        "A policy set scoped to the intended workspaces or projects",
+        "A local CLI workspace name only",
+        "An output variable named policies",
+        "A provider alias for every team member"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Policy sets organize policies and their scope. Multiple workspaces can use the same set, subject to platform capabilities and configuration, without copying rules into every resource.",
+      "source": "/terraform/cloud-docs/policy-enforcement/manage-policy-sets"
+    },
+    {
+      "id": "hcp-18",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "A Sentinel policy fails with soft-mandatory enforcement. Which action can allow the run to continue, if organizational permissions permit it?",
+      "options": [
+        "An authorized policy override",
+        "terraform fmt automatically approving it",
+        "Deleting a local provider lock file",
+        "Any anonymous visitor selecting apply"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Soft-mandatory failures stop the run until an authorized override or a correction. Hard-mandatory behavior also depends on policy-set override settings, so avoid assuming every hard failure is unconditionally non-overridable.",
+      "source": "/terraform/cloud-docs/policy-enforcement/manage-policy-sets"
+    },
+    {
+      "id": "hcp-19",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "A team wants an external collaboration system informed when standard workspace runs require attention or finish. Which HCP feature is designed for this?",
+      "options": [
+        "Workspace notification configurations",
+        "A renamed state serial",
+        "A module output that changes button colors",
+        "terraform state rm"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Workspace notifications send configured event payloads to supported destinations, including generic webhooks. They do not automatically support speculative plans or workspaces in local execution mode.",
+      "source": "/terraform/cloud-docs/workspaces/settings/notifications"
+    },
+    {
+      "id": "hcp-20",
+      "topic": "hcp",
+      "objective": "8d",
+      "prompt": "A remote HCP run must clone a module directly from a private Git repository over SSH. What configuration supports that access?",
+      "options": [
+        "Assign an appropriate organization-managed module-cloning SSH key to the workspace",
+        "Put the private key in a public module output",
+        "Change the workspace's Terraform version to the SSH key",
+        "Assume the VCS connection's source-ingestion key always supplies module-cloning access"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "HCP can assign a stored SSH key for cloning private Git modules during runs. These keys are managed separately from VCS source-ingestion keys; registry-based private modules use a different workflow.",
+      "source": "/terraform/cloud-docs/workspaces/settings/ssh-keys"
+    },
+    {
+      "id": "hcp-21",
+      "topic": "hcp",
+      "objective": "8d",
+      "prompt": "Automation integrates with the HCP Terraform API. Which authentication approach is expected for protected API requests?",
+      "options": [
+        "An appropriate bearer API token with permissions for the requested operation",
+        "The public workspace name as a password",
+        "A provider checksum instead of credentials",
+        "An unauthenticated request because Terraform configuration is declarative"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "The API uses bearer tokens and authorization scopes. Token type and permissions matter; store tokens securely rather than embedding them in committed configuration.",
+      "source": "/terraform/cloud-docs/api-docs"
+    },
+    {
+      "id": "hcp-22",
+      "topic": "hcp",
+      "objective": "8b",
+      "prompt": "A company wants a self-hosted distribution of the HCP Terraform application rather than HashiCorp's hosted service. Which product describes that choice?",
+      "options": [
+        "Terraform Enterprise",
+        "The local backend alone",
+        "The public provider registry",
+        "A CLI workspace named enterprise"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Terraform Enterprise is the self-hosted distribution of HCP Terraform. Hosting the application is different from merely using local state or agents to execute runs.",
+      "source": "/terraform/enterprise"
+    },
+    {
+      "id": "iac-13",
+      "topic": "iac",
+      "objective": "1a",
+      "prompt": "An infrastructure team rolls out a new server image by creating replacement instances and retiring old ones rather than editing each old server. Which pattern is this?",
+      "options": [
+        "Immutable infrastructure replacement",
+        "Manual in-place configuration only",
+        "State-file formatting",
+        "An automatic database backup"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Immutable infrastructure replaces components rather than modifying them in place. Terraform can plan replacements or in-place updates depending on configuration and provider behavior; it does not force every change to be a replacement.",
+      "source": "/terraform/intro/v1.12.x"
+    },
+    {
+      "id": "iac-14",
+      "topic": "iac",
+      "objective": "1a",
+      "prompt": "Terraform provisions virtual machines, while another tool configures packages inside them. Which statement best describes this division of work?",
+      "options": [
+        "Provisioning and guest configuration can be complementary workflows",
+        "Terraform cannot manage a VM if another tool configures its software",
+        "Guest package changes automatically rewrite all Terraform files",
+        "Both tools must share the same state-file format"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Infrastructure provisioning and software configuration solve related but distinct problems. Teams can combine them intentionally while defining ownership and dependencies clearly.",
+      "source": "/terraform/intro/v1.12.x/use-cases"
+    },
+    {
+      "id": "modules-13",
+      "topic": "modules",
+      "objective": "5c",
+      "prompt": "A directory's backend and providers are already initialized, but an engineer wants to download modules declared by the root configuration. Which dedicated CLI command does this?",
+      "options": [
+        "terraform get",
+        "terraform state get",
+        "terraform providers lock -modules",
+        "terraform output -download"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "terraform get downloads modules, and -update checks already downloaded modules for updates. The usual init workflow also installs modules and additionally initializes backends and providers.",
+      "source": "/terraform/cli/v1.12.x/commands/get"
+    },
+    {
+      "id": "modules-14",
+      "topic": "modules",
+      "objective": "5a",
+      "prompt": "A private registry hosts a network module. Which source-address structure identifies a private registry module?",
+      "options": [
+        "hostname/namespace/name/provider",
+        "provider/terraform.tfstate",
+        "var.namespace.name",
+        "Only a bare semantic version"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "Private registry addresses add a hostname to the namespace/name/provider module format. Access may require registry credentials; module sourcing does not grant cloud-provider permissions.",
+      "source": "/terraform/registry/modules/use"
+    },
+    {
+      "id": "workflow-16",
+      "topic": "workflow",
+      "objective": "3d",
+      "prompt": "A normal human-readable plan marks one resource with ~ and another with -/+. What do these markers mean?",
+      "options": [
+        "An in-place update, and a destroy-then-create replacement",
+        "A refresh warning, and an unchanged resource",
+        "Two resource imports",
+        "Two provider version upgrades"
+      ],
+      "answers": [
+        0
+      ],
+      "explanation": "The plan legend identifies ~ as an in-place update and -/+ as replacement with destruction before creation. A create-before-destroy replacement uses the opposite ordering marker; always read the plan's legend and actions.",
+      "source": "/terraform/cli/v1.12.x/commands/plan"
+    }
+  ]
+}
